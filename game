@@ -1,14 +1,17 @@
 import pygame
 import os
 import sys
-#from PIL import Image
+import time
 
 
-FPS = 50
+FPS = 60
 WIDTH = 1200
 HEIGHT = 768
 LENGTH = 32
+COUNT = 0
+EATEN = 0
 BOARD = []
+file_of_game_to_play = 'level1.txt'
 
 def terminate():
     pygame.quit()
@@ -16,40 +19,44 @@ def terminate():
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('pics', name)
-    #print(fullname)
     myimage = pygame.image.load(fullname) # .convert()
-    #print(myimage)
-    #print(fullname)
-
     return myimage
 
 def cut_image(iimage, x1, y1):
-    #im = Image.open(iimage)
     x = x1 * LENGTH
     y = y1 * LENGTH
-    #print(iimage)
-    #subsurface = a_surface.subsurface((x, y, width, height))
-    #iimage.crop(x, y, x + LENGTH, y + LENGTH)
     return iimage.subsurface(x, y, LENGTH, LENGTH)
 
-def start_screen():
-    intro_text = ["SUPAPLEX", "",
-                  "Правила игры",
-                  "Если в правилах несколько строк,",
-                  "приходится выводить их построчно"]
-
+def choose_level():
     fon = pygame.transform.scale(load_image('Background.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
+    pygame.draw.rect(screen, (0, 0, 0), (WIDTH // 2 - 135, HEIGHT // 2 - 135,
+                                        270, 270), 0)
+
+def start_screen():
+    fon = pygame.transform.scale(load_image('Background.png'), (WIDTH, HEIGHT))
+    screen.blit(fon, (0, 0))
+    pygame.draw.rect(screen, (150, 255, 150), (WIDTH // 2 - 75, HEIGHT // 2 + 100,
+                                               250, 50), 0)
+    pygame.draw.rect(screen, (150, 255, 150), (WIDTH // 2 - 75, HEIGHT // 2 + 175,
+                                               250, 50), 0)
+    font = pygame.font.Font(None, 60)
     text_coord = 50
-    for line in intro_text:
-        string_rendered = font.render(line, 1, pygame.Color('black'))
-        intro_rect = string_rendered.get_rect()
-        text_coord += 10
-        intro_rect.top = text_coord
-        intro_rect.x = 10
-        text_coord += intro_rect.height
-        screen.blit(string_rendered, intro_rect)
+    st = 'Start game'
+    text = font.render(st, 1, (0, 0, 0))
+    text_x = WIDTH // 2 - 70
+    text_y = HEIGHT // 2 + 105
+    text_w = text.get_width()
+    text_h = text.get_height()
+    screen.blit(text, (text_x, text_y))
+
+    st = 'Select level'
+    text = font.render(st, 1, (0, 0, 0))
+    text_x = WIDTH // 2 - 70
+    text_y = HEIGHT // 2 + 180
+    text_w = text.get_width()
+    text_h = text.get_height()
+    screen.blit(text, (text_x, text_y))
 
     clock = pygame.time.Clock()
 
@@ -57,17 +64,20 @@ def start_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                return  # начинаем игру
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x = event.pos[0]
+                y = event.pos[1]
+                if WIDTH // 2 - 75 < x < WIDTH // 2 - 75 + 250 and HEIGHT // 2 + 100 < y < HEIGHT // 2 + 150:
+                    return  # начинаем игру
+                elif WIDTH // 2 - 75 < x < WIDTH // 2 - 75 + 250 and HEIGHT // 2 + 175 < y < HEIGHT // 2 + 225:
+                    choose_level()
         pygame.display.flip()
         clock.tick(FPS)
 
 def load_level(filename):
-    #filename = "pics/" + filename
     # читаем уровень, убирая символы перевода строки
     with open(filename, 'r') as mapFile:
         level_map = [line.strip() for line in mapFile]
-        # BOARD = [['' for i in line] for line in level_map]
 
     # и подсчитываем максимальную длину
     max_width = max(map(len, level_map))
@@ -81,10 +91,10 @@ player_group = pygame.sprite.Group()
 
 def generate_level(level):
     new_player, x, y = None, None, None
+    count = 0
     for y in range(len(level)):
         line = []
         for x in range(len(level[y])):
-            # print(x, y)
             if level[y][x] == ' ':
                 empty = Tile('empty', x, y, True)
                 line.append(['empty', True])
@@ -100,6 +110,7 @@ def generate_level(level):
                 new_player = Player(x, y)
             elif level[y][x] == 'y':
                 crystal = Tile('crystal', x, y, True)
+                count += 1
                 line.append(['crystal', True])
             elif level[y][x] == '5':
                 chip_square = Tile('chip_square', x, y, False)
@@ -128,14 +139,15 @@ def generate_level(level):
             else:
                 num = ord(level[y][x]) - 48
                 name = 'pic' + str(num)
-                picture = Tile(name, x, y, False)
-                line.append([name, False])
+                if level[y][x] == 'I':
+                    cango = True
+                else:
+                    cango = False
+                picture = Tile(name, x, y, cango)
+                line.append([name, cango])
         BOARD.append(line)
-                #filename1 = name + '.png'
-                #tile_images[name] = cut_image(load_image(picname), num, 0)
-                #print(tile_images)
     # вернем игрока, а также размер поля в клетках
-    return new_player, x, y
+    return new_player, x, y, count
 
 def update_level(x, y):
     for y in range(len(BOARD)):
@@ -205,7 +217,6 @@ class Tile(pygame.sprite.Sprite):
         self.pos_x = pos_x
         self.pos_y = pos_y
 
-
     def can_go(self):
         return self.can_go_to
 
@@ -217,10 +228,9 @@ class Tile(pygame.sprite.Sprite):
         if self.pic != BOARD[self.pos_y][self.pos_x][0] :
             self.image = tile_images[BOARD[self.pos_y][self.pos_x][0]]
 
-
     def kill(self):
-        #print('kill')
         super().kill(self)
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
@@ -262,14 +272,20 @@ screen = pygame.display.set_mode(size)
 start_screen()
 xm = 0
 ym = 0
-level = load_level("level1.txt")
-player, x, y = generate_level(level)
+level = load_level(file_of_game_to_play)
+player, x, y, count = generate_level(level)
 pos_x = player.position_x()
 pos_y = player.position_y()
-#print(pos_x, pos_y)
-#for i in BOARD:
-#    print(i)
-# print(BOARD)
+pygame.mixer.music.load('sound\\music.mp3')
+pygame.mixer.music.play()
+
+sound_crystal = pygame.mixer.Sound('sound\\crystal.wav')
+# sound_bomb = pygame.mixer.Sound('sound\\bomb.mp3')
+# sound_fail = pygame.mixer.Sound('sound\\fail.mp3')
+# sound_victory = pygame.mixer.Sound('sound\\victory.mp3')
+
+eaten = 0
+sec = 0
 camera = Camera()
 while True:
     for event in pygame.event.get():
@@ -280,41 +296,48 @@ while True:
             ym = 0
             key = pygame.key.get_pressed()
             if key[pygame.K_LEFT]:
-                #print('t0',pos_y,pos_x,BOARD[pos_y][pos_x],BOARD[pos_y][pos_x][2].name)
-                #print('t1',pos_y,pos_x,BOARD[pos_y][pos_x-1],BOARD[pos_y][pos_x-1][2].name)
-
                 if BOARD[pos_y][pos_x - 1][1]:
-                 #   BOARD[pos_y][pos_x][2].kill
-                 #   print('t12', pos_y, pos_x, BOARD[pos_y][pos_x], BOARD[pos_y][pos_x][2].name)
-
-                 #   empty = Tile('empty', pos_y, pos_x, True)
-                 #   print('t12', pos_y, pos_x, BOARD[pos_y][pos_x], BOARD[pos_y][pos_x][2].name)
-
+                    if BOARD[pos_y][pos_x - 1][0] == 'crystal':
+                        eaten += 1
+                        pygame.mixer.music.pause()
+                        sound_crystal.play()
+                        pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
-                 #   print('t2',pos_y,pos_x, BOARD[pos_y][pos_x],BOARD[pos_y][pos_x][2].name)
-
                     player.rect.x -= 32
                     pos_x -= 1
             if key[pygame.K_RIGHT]:
                 if BOARD[pos_y][pos_x + 1][1]:
+                    if BOARD[pos_y][pos_x + 1][0] == 'crystal':
+                        eaten += 1
+                        pygame.mixer.music.pause()
+                        sound_crystal.play()
+                        pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
                     player.rect.x += 32
                     pos_x += 1
             if key[pygame.K_UP]:
                 if BOARD[pos_y - 1][pos_x][1]:
+                    if BOARD[pos_y - 1][pos_x][0] == 'crystal':
+                        eaten += 1
+                        pygame.mixer.music.pause()
+                        sound_crystal.play()
+                        pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
                     player.rect.y -= 32
                     pos_y -= 1
             if key[pygame.K_DOWN]:
                 if BOARD[pos_y + 1][pos_x][1]:
+                    if BOARD[pos_y + 1][pos_x][0] == 'crystal':
+                        eaten += 1
+                        pygame.mixer.music.pause()
+                        sound_crystal.play()
+                        pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
                     player.rect.y += 32
                     pos_y += 1
-            #if BOARD[pos_y][pos_x][0] == 'grass':
-            #    BOARD[pos_y][pos_x] = ['empty', True]
-            #    Tile('empty', pos_y, pos_x, True)
             print(pos_y, pos_x)
             print(BOARD[pos_y][pos_x][0])
+            print(count, eaten)
     # all_sprites = pygame.sprite.Group()
     all_sprites.update()
     #update_level(pos_x, pos_y)
@@ -328,4 +351,24 @@ while True:
     all_sprites.draw(screen)
     tiles_group.draw(screen)
     player_group.draw(screen)
+
+    font = pygame.font.Font(None, 50)
+    st = str(eaten) + '/' + str(count)
+    text = font.render(st, 1, (255, 255, 255))
+    text_x = 10
+    text_y = 10
+    text_w = text.get_width()
+    text_h = text.get_height()
+    screen.blit(text, (text_x, text_y))
+
+    # time.sleep(1)
+    # sec += 1
+    # st = str(sec // 60).rjust(2, '0') + ':' + str(sec % 60).rjust(2, '0')
+    # text = font.render(st, 1, (255, 255, 255))
+    # text_x = WIDTH - text.get_width() - 10
+    # text_y = 10
+    # text_w = text.get_width()
+    # text_h = text.get_height()
+    # screen.blit(text, (text_x, text_y))
+
     pygame.display.flip()
