@@ -1,13 +1,14 @@
 import pygame
 import os
 import sys
-from PIL import Image
+#from PIL import Image
 
 
 FPS = 50
 WIDTH = 1200
 HEIGHT = 768
 LENGTH = 32
+BOARD = []
 
 def terminate():
     pygame.quit()
@@ -15,10 +16,10 @@ def terminate():
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('pics', name)
-    print(fullname)
+    #print(fullname)
     myimage = pygame.image.load(fullname) # .convert()
-    print(myimage)
-    print(fullname)
+    #print(myimage)
+    #print(fullname)
 
     return myimage
 
@@ -26,7 +27,7 @@ def cut_image(iimage, x1, y1):
     #im = Image.open(iimage)
     x = x1 * LENGTH
     y = y1 * LENGTH
-    print(iimage)
+    #print(iimage)
     #subsurface = a_surface.subsurface((x, y, width, height))
     #iimage.crop(x, y, x + LENGTH, y + LENGTH)
     return iimage.subsurface(x, y, LENGTH, LENGTH)
@@ -66,6 +67,7 @@ def load_level(filename):
     # читаем уровень, убирая символы перевода строки
     with open(filename, 'r') as mapFile:
         level_map = [line.strip() for line in mapFile]
+        # BOARD = [['' for i in line] for line in level_map]
 
     # и подсчитываем максимальную длину
     max_width = max(map(len, level_map))
@@ -80,46 +82,66 @@ player_group = pygame.sprite.Group()
 def generate_level(level):
     new_player, x, y = None, None, None
     for y in range(len(level)):
+        line = []
         for x in range(len(level[y])):
-            print(x, y)
+            # print(x, y)
             if level[y][x] == ' ':
-                Tile('empty', x, y, True)
+                empty = Tile('empty', x, y, True)
+                line.append(['empty', True])
             elif level[y][x] == 'o':
-                Tile('stone', x, y, True)
+                stone = Tile('stone', x, y, True)
+                line.append(['stone', False])
             elif level[y][x] == '.':
-                Tile('grass', x, y, True)
+                grass = Tile('grass', x, y, True)
+                line.append(['grass', True])
             elif level[y][x] == '3':
-                Tile('empty', x, y, True)
+                empty = Tile('empty', x, y, True)
+                line.append(['empty', True])
                 new_player = Player(x, y)
             elif level[y][x] == 'y':
-                Tile('crystal', x, y, True)
+                crystal = Tile('crystal', x, y, True)
+                line.append(['crystal', True])
             elif level[y][x] == '5':
-                Tile('chip_square', x, y, False)
+                chip_square = Tile('chip_square', x, y, False)
+                line.append(['chip_square', False])
             elif level[y][x] == 'e':
-                Tile('exit', x, y, False)
+                exit = Tile('exit', x, y, False)
+                line.append(['exit', False])
             elif level[y][x] == 'b':
-                Tile('disketa', x, y, False)
+                disketa = Tile('disketa', x, y, False)
+                line.append(['disketa', False])
             elif level[y][x] == 'c':
-                Tile('pult', x, y, False)   # Взрыв дискет
+                pult = Tile('pult', x, y, False)   # Взрыв дискет
+                line.append(['pult', False])
             elif level[y][x] == '#':
-                Tile('fence', x, y, False)
+                fence = Tile('fence', x, y, False)
+                line.append(['fence', False])
             elif level[y][x] == 'j':
-                Tile('scheme1', x, y, False)
+                scheme1 = Tile('scheme1', x, y, False)
+                line.append(['scheme1', False])
             elif level[y][x] == 'k':
-                Tile('scheme2', x, y, False)
+                scheme2 = Tile('scheme2', x, y, False)
+                line.append(['scheme2', False])
             elif level[y][x] == 'A':
-                Tile('scissors', x, y, False)
+                scissors = Tile('scissors', x, y, False)
+                line.append(['scissors', False])
             else:
                 num = ord(level[y][x]) - 48
                 name = 'pic' + str(num)
-
-                Tile(name, x, y, False)
+                picture = Tile(name, x, y, False)
+                line.append([name, False])
+        BOARD.append(line)
                 #filename1 = name + '.png'
                 #tile_images[name] = cut_image(load_image(picname), num, 0)
                 #print(tile_images)
-
     # вернем игрока, а также размер поля в клетках
     return new_player, x, y
+
+def update_level(x, y):
+    for y in range(len(BOARD)):
+        for x in range(len(BOARD[y])):
+            Tile(BOARD[y][x][0], x, y, BOARD[y][x][1])
+    player = Player(x, y)
 
 picname = 'image_all.png'
 tile_images = {'empty': cut_image(load_image(picname), 0, 0),
@@ -173,20 +195,46 @@ tile_width = tile_height = 32
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y, can_go):
-        super().__init__(tiles_group, all_sprites)
+        #super().__init__(tiles_group, all_sprites)
+        super().__init__(all_sprites)
         self.image = tile_images[tile_type]
-        self.can_go = can_go
+        self.can_go_to = can_go
+        self.name = all_sprites  #tiles_group
+        self.pic = tile_type
         self.rect = self.image.get_rect().move(tile_width * pos_x, tile_height * pos_y)
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+
 
     def can_go(self):
-        return self.can_go()
+        return self.can_go_to
 
+    def name(self):
+        return self.name
+
+    def update(self):
+        #print('update', self.pos_x, self.pos_y)
+        if self.pic != BOARD[self.pos_y][self.pos_x][0] :
+            self.image = tile_images[BOARD[self.pos_y][self.pos_x][0]]
+
+
+    def kill(self):
+        #print('kill')
+        super().kill(self)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
         self.image = player_image
         self.rect = self.image.get_rect().move(tile_width * pos_x, tile_height * pos_y)
+        self.x = pos_x
+        self.y = pos_y
+
+    def position_x(self):
+        return self.x
+
+    def position_y(self):
+        return self.y
 
 
 class Camera:
@@ -216,6 +264,12 @@ xm = 0
 ym = 0
 level = load_level("level1.txt")
 player, x, y = generate_level(level)
+pos_x = player.position_x()
+pos_y = player.position_y()
+#print(pos_x, pos_y)
+#for i in BOARD:
+#    print(i)
+# print(BOARD)
 camera = Camera()
 while True:
     for event in pygame.event.get():
@@ -226,13 +280,44 @@ while True:
             ym = 0
             key = pygame.key.get_pressed()
             if key[pygame.K_LEFT]:
-                player.rect.x -= 32
+                #print('t0',pos_y,pos_x,BOARD[pos_y][pos_x],BOARD[pos_y][pos_x][2].name)
+                #print('t1',pos_y,pos_x,BOARD[pos_y][pos_x-1],BOARD[pos_y][pos_x-1][2].name)
+
+                if BOARD[pos_y][pos_x - 1][1]:
+                 #   BOARD[pos_y][pos_x][2].kill
+                 #   print('t12', pos_y, pos_x, BOARD[pos_y][pos_x], BOARD[pos_y][pos_x][2].name)
+
+                 #   empty = Tile('empty', pos_y, pos_x, True)
+                 #   print('t12', pos_y, pos_x, BOARD[pos_y][pos_x], BOARD[pos_y][pos_x][2].name)
+
+                    BOARD[pos_y][pos_x] = ['empty', True]
+                 #   print('t2',pos_y,pos_x, BOARD[pos_y][pos_x],BOARD[pos_y][pos_x][2].name)
+
+                    player.rect.x -= 32
+                    pos_x -= 1
             if key[pygame.K_RIGHT]:
-                player.rect.x += 32
+                if BOARD[pos_y][pos_x + 1][1]:
+                    BOARD[pos_y][pos_x] = ['empty', True]
+                    player.rect.x += 32
+                    pos_x += 1
             if key[pygame.K_UP]:
-                player.rect.y -= 32
+                if BOARD[pos_y - 1][pos_x][1]:
+                    BOARD[pos_y][pos_x] = ['empty', True]
+                    player.rect.y -= 32
+                    pos_y -= 1
             if key[pygame.K_DOWN]:
-                player.rect.y += 32
+                if BOARD[pos_y + 1][pos_x][1]:
+                    BOARD[pos_y][pos_x] = ['empty', True]
+                    player.rect.y += 32
+                    pos_y += 1
+            #if BOARD[pos_y][pos_x][0] == 'grass':
+            #    BOARD[pos_y][pos_x] = ['empty', True]
+            #    Tile('empty', pos_y, pos_x, True)
+            print(pos_y, pos_x)
+            print(BOARD[pos_y][pos_x][0])
+    # all_sprites = pygame.sprite.Group()
+    all_sprites.update()
+    #update_level(pos_x, pos_y)
     screen.fill((0, 0, 0))
     # изменяем ракурс камеры
     camera.update(player)
