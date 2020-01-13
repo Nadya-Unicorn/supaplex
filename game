@@ -11,7 +11,6 @@ LENGTH = 32
 COUNT = 0
 EATEN = 0
 BOARD = []
-file_of_game_to_play = 'level1.txt'
 
 def terminate():
     pygame.quit()
@@ -28,6 +27,9 @@ def cut_image(iimage, x1, y1):
     return iimage.subsurface(x, y, LENGTH, LENGTH)
 
 def choose_level():
+    global file_of_game_to_play
+
+    # print(5, file_of_game_to_play)
     fon = pygame.transform.scale(load_image('Background.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     pygame.draw.rect(screen, (200, 200, 200), (WIDTH // 2 - 180, HEIGHT // 2 - 180, 360, 360), 0)
@@ -61,8 +63,43 @@ def choose_level():
             text_h = text.get_height()
             screen.blit(text, (text_x, text_y))
 
+    clock = pygame.time.Clock()
+    # file_of_game_to_play = 'level1.txt'
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x = event.pos[0]
+                y = event.pos[1]
+                # print(x, y)
+                if WIDTH // 2 - 160 < x < WIDTH // 2 - 60 and HEIGHT // 2 - 160 < y < HEIGHT // 2 - 60:
+                    file_of_game_to_play = 'level1.txt'
+                elif WIDTH // 2 - 50 < x < WIDTH // 2 + 50 and HEIGHT // 2 - 160 < y < HEIGHT // 2 - 60:
+                    file_of_game_to_play = 'level2.txt'
+                elif WIDTH // 2 + 60 < x < WIDTH // 2 + 160 and HEIGHT // 2 - 160 < y < HEIGHT // 2 - 60:
+                    file_of_game_to_play = 'level3.txt'
+
+                elif WIDTH // 2 - 160 < x < WIDTH // 2 - 60 and HEIGHT // 2 - 50 < y < HEIGHT // 2 + 50:
+                    file_of_game_to_play = 'level4.txt'
+                elif WIDTH // 2 - 50 < x < WIDTH // 2 + 50 and HEIGHT // 2 - 50 < y < HEIGHT // 2 + 50:
+                    file_of_game_to_play = 'level5.txt'
+                elif WIDTH // 2 + 60 < x < WIDTH // 2 + 160 and HEIGHT // 2 - 50 < y < HEIGHT // 2 + 50:
+                    file_of_game_to_play = 'level6.txt'
+
+                elif WIDTH // 2 - 160 < x < WIDTH // 2 - 60 and HEIGHT // 2 + 60 < y < HEIGHT // 2 + 160:
+                    file_of_game_to_play = 'level7.txt'
+                elif WIDTH // 2 - 50 < x < WIDTH // 2 + 50 and HEIGHT // 2 + 60 < y < HEIGHT // 2 + 160:
+                    file_of_game_to_play = 'level8.txt'
+                elif WIDTH // 2 + 60 < x < WIDTH // 2 + 160 and HEIGHT // 2 + 60 < y < HEIGHT // 2 + 160:
+                    file_of_game_to_play = 'level9.txt'
+                return
+        pygame.display.flip()
+        clock.tick(FPS)
+
 
 def start_screen():
+    # print(3, file_of_game_to_play)
     fon = pygame.transform.scale(load_image('Background.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     pygame.draw.rect(screen, (150, 255, 150), (WIDTH // 2 - 75, HEIGHT // 2 + 100,
@@ -99,7 +136,10 @@ def start_screen():
                 if WIDTH // 2 - 75 < x < WIDTH // 2 - 75 + 250 and HEIGHT // 2 + 100 < y < HEIGHT // 2 + 150:
                     return  # начинаем игру
                 elif WIDTH // 2 - 75 < x < WIDTH // 2 - 75 + 250 and HEIGHT // 2 + 175 < y < HEIGHT // 2 + 225:
+                    # print(4, file_of_game_to_play)
                     choose_level()
+                    # print('m', file_of_game_to_play)
+                    return
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -297,8 +337,11 @@ pygame.init()
 
 size = WIDTH, HEIGHT
 screen = pygame.display.set_mode(size)
-
+file_of_game_to_play = 'level1.txt'
+# print('1', file_of_game_to_play)
 start_screen()
+# print(2, file_of_game_to_play)
+
 xm = 0
 ym = 0
 level = load_level(file_of_game_to_play)
