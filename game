@@ -26,6 +26,30 @@ def cut_image(iimage, x1, y1):
     y = y1 * LENGTH
     return iimage.subsurface(x, y, LENGTH, LENGTH)
 
+def falling_stones():
+    global BOARD
+    for i in range(len(BOARD) - 1, 0, -1 ):
+        for j in range(len(BOARD[i])):
+            if BOARD[i][j][0] == 'stone':
+                if BOARD[i + 1][j][0] == 'empty':
+                    BOARD[i + 1][j] = ['stone', False]
+                    BOARD[i][j] = ['empty', True]
+                    # print('stoneee1', i, j)
+                elif BOARD[i + 1][j - 1][0] == 'empty' and BOARD[i + 1][j][0] != 'player_image' and\
+                        BOARD[i][j - 1][0] == 'empty' and BOARD[i + 1][j][0] == 'stone':
+                    BOARD[i + 1][j - 1] = ['stone', False]
+                    BOARD[i][j] = ['empty', True]
+                    # print('stoneee2',i,j)
+                elif BOARD[i + 1][j + 1][0] == 'empty' and BOARD[i + 1][j][0] != 'player_image' and\
+                        BOARD[i][j + 1][0] == 'empty' and BOARD[i + 1][j][0] == 'stone':
+                    BOARD[i + 1][j + 1] = ['stone', False]
+                    BOARD[i][j] = ['empty', True]
+            if BOARD[i][j][0] == 'crystal':
+                if BOARD[i + 1][j][0] == 'empty':
+                    BOARD[i + 1][j] = ['crystal', True]
+                    BOARD[i][j] = ['empty', True]
+                    # print('stoneee3', i, j)
+
 def choose_level():
     global file_of_game_to_play
 
@@ -170,7 +194,7 @@ def generate_level(level):
                 line.append(['grass', True])
             elif level[y][x] == '3':
                 empty = Tile('empty', x, y, True)
-                line.append(['empty', True])
+                line.append(['player_image', True])
                 new_player = Player(x, y)
             elif level[y][x] == 'y':
                 crystal = Tile('crystal', x, y, True)
@@ -213,7 +237,7 @@ def generate_level(level):
     # вернем игрока, а также размер поля в клетках
     return new_player, x, y, count
 
-def update_level(x, y):
+def update_level11(x, y):
     for y in range(len(BOARD)):
         for x in range(len(BOARD[y])):
             Tile(BOARD[y][x][0], x, y, BOARD[y][x][1])
@@ -262,7 +286,8 @@ tile_images = {'empty': cut_image(load_image(picname), 0, 0),
                'pic38': cut_image(load_image(picname), 38, 0),
                'pic39': cut_image(load_image(picname), 39, 0),
                'pic40': cut_image(load_image(picname), 40, 0),
-               'pic41': cut_image(load_image(picname), 41, 0)
+               'pic41': cut_image(load_image(picname), 41, 0),
+               'player_image' : cut_image(load_image(picname), 3, 0)
                }
 player_image = cut_image(load_image(picname), 3, 0)
 
@@ -271,7 +296,7 @@ tile_width = tile_height = 32
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y, can_go):
-        #super().__init__(tiles_group, all_sprites)
+        # super().__init__(tiles_group, all_sprites)
         super().__init__(all_sprites)
         self.image = tile_images[tile_type]
         self.can_go_to = can_go
@@ -288,9 +313,11 @@ class Tile(pygame.sprite.Sprite):
         return self.name
 
     def update(self):
-        #print('update', self.pos_x, self.pos_y)
+        # print('update', self.pos_x, self.pos_y)
         if self.pic != BOARD[self.pos_y][self.pos_x][0] :
             self.image = tile_images[BOARD[self.pos_y][self.pos_x][0]]
+            self.pic = BOARD[self.pos_y][self.pos_x][0]
+            print('sto_update', self.pos_x, self.pos_y)
 
     def kill(self):
         super().kill(self)
@@ -333,9 +360,7 @@ pygame.init()
 size = WIDTH, HEIGHT
 screen = pygame.display.set_mode(size)
 file_of_game_to_play = 'level1.txt'
-# print('1', file_of_game_to_play)
 start_screen()
-# print(2, file_of_game_to_play)
 
 xm = 0
 ym = 0
@@ -375,6 +400,7 @@ while True:
                         sound_crystal.play()
                         pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
+                    BOARD[pos_y][pos_x - 1] = ['player_image', False]
                     player.rect.x -= 32
                     pos_x -= 1
             if key[pygame.K_RIGHT]:
@@ -385,6 +411,7 @@ while True:
                         sound_crystal.play()
                         pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
+                    BOARD[pos_y][pos_x + 1] = ['player_image', False]
                     player.rect.x += 32
                     pos_x += 1
             if key[pygame.K_UP]:
@@ -395,6 +422,7 @@ while True:
                         sound_crystal.play()
                         pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
+                    BOARD[pos_y - 1][pos_x] = ['player_image', False]
                     player.rect.y -= 32
                     pos_y -= 1
             if key[pygame.K_DOWN]:
@@ -405,11 +433,14 @@ while True:
                         sound_crystal.play()
                         pygame.mixer.music.unpause()
                     BOARD[pos_y][pos_x] = ['empty', True]
+                    BOARD[pos_y + 1][pos_x] = ['player_image', False]
                     player.rect.y += 32
                     pos_y += 1
+
             print(pos_y, pos_x)
             print(BOARD[pos_y][pos_x][0])
             print(count, eaten)
+    falling_stones()
     # all_sprites = pygame.sprite.Group()
     all_sprites.update()
     #update_level(pos_x, pos_y)
@@ -422,7 +453,7 @@ while True:
 
     all_sprites.draw(screen)
     tiles_group.draw(screen)
-    player_group.draw(screen)
+    #.draw(screen)
 
     image = pygame.image.load('go_out.jpg')
     image1 = pygame.transform.scale(image, (45, 45))
