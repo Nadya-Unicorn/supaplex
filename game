@@ -11,6 +11,7 @@ LENGTH = 32
 COUNT = 0
 EATEN = 0
 BOARD = []
+END = False
 
 def terminate():
     pygame.quit()
@@ -26,6 +27,66 @@ def cut_image(iimage, x1, y1):
     y = y1 * LENGTH
     return iimage.subsurface(x, y, LENGTH, LENGTH)
 
+def end_game():
+    global file_of_game_to_play
+    global eaten
+    screen.fill((0, 0, 0))
+    font = pygame.font.Font(None, 60)
+    text_coord = 50
+    st = 'YOU GOT ' + str(eaten) + '/' + str(count) + '!'
+    text = font.render(st, 1, (255, 255, 255))
+    text_x = WIDTH // 2 - 70
+    text_y = HEIGHT // 2 - 200
+    text_w = text.get_width()
+    text_h = text.get_height()
+    screen.blit(text, (text_x, text_y))
+
+    pygame.draw.rect(screen, (150, 255, 150), (WIDTH // 2 - 75, HEIGHT // 2 + 100,
+                                               250, 55), 0)
+    st = 'NEXT LEVEL'
+    text = font.render(st, 1, (0, 0, 0))
+    text_x = WIDTH // 2 - 70
+    text_y = HEIGHT // 2 + 110
+    text_w = text.get_width()
+    text_h = text.get_height()
+    screen.blit(text, (text_x, text_y))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x = event.pos[0]
+                y = event.pos[1]
+                # print(x, y)
+                if WIDTH - 50 < x < WIDTH and HEIGHT - 50 < y < HEIGHT:
+                    terminate()
+
+                elif WIDTH // 2 - 70 < x < WIDTH // 2 + 175 and HEIGHT // 2 + 100 < y < HEIGHT // 2 + 155:
+                    # print('next')
+                    file = file_of_game_to_play.split('.')[0]
+                    num = int(file[5:])
+                    file_of_game_to_play = 'level' + str(num + 1) + '.txt'
+                    # print('selected',file_of_game_to_play)
+                    BOARD = []
+                    eaten = 0
+                    return load_level(file_of_game_to_play)
+        pygame.display.flip()
+        # clock.tick(FPS)
+
+def bomb_all(i, j):
+    BOARD[i][j] = ['pic41', True]
+    BOARD[i - 1][j] = ['pic41', True]
+    BOARD[i][j - 1] = ['pic41', True]
+    BOARD[i - 1][j - 1] = ['pic41', True]
+    BOARD[i + 1][j] = ['pic41', True]
+    BOARD[i][j + 1] = ['pic41', True]
+    BOARD[i + 1][j + 1] = ['pic41', True]
+    BOARD[i - 1][j + 1] = ['pic41', True]
+    BOARD[i + 1][j - 1] = ['pic41', True]
+    sound_bomb = pygame.mixer.Sound('sound\\bomb.wav')
+    sound_bomb.play()
+
 def falling_stones():
     global BOARD
     for i in range(len(BOARD) - 1, 0, -1 ):
@@ -35,6 +96,9 @@ def falling_stones():
                     BOARD[i + 1][j] = ['stone', False]
                     BOARD[i][j] = ['empty', True]
                     # print('stoneee1', i, j)
+                # elif BOARD[i + 1][j][0] == 'player_image':
+                #     bomb_all(i, j)
+                #     END = True
                 elif BOARD[i + 1][j - 1][0] == 'empty' and BOARD[i + 1][j][0] != 'player_image' and\
                         BOARD[i][j - 1][0] == 'empty' and BOARD[i + 1][j][0] == 'stone':
                     BOARD[i + 1][j - 1] = ['stone', False]
@@ -86,6 +150,10 @@ def choose_level():
             text_h = text.get_height()
             screen.blit(text, (text_x, text_y))
 
+    image = pygame.image.load('go_out.jpg')
+    image1 = pygame.transform.scale(image, (45, 45))
+    screen.blit(image1, (WIDTH - 50, HEIGHT - 50))
+
     clock = pygame.time.Clock()
     while True:
         for event in pygame.event.get():
@@ -95,6 +163,9 @@ def choose_level():
                 x = event.pos[0]
                 y = event.pos[1]
                 # print(x, y)
+                if WIDTH - 50 < x < WIDTH and HEIGHT - 50 < y < HEIGHT:
+                    terminate()
+
                 if WIDTH // 2 - 160 < x < WIDTH // 2 - 60 and HEIGHT // 2 - 160 < y < HEIGHT // 2 - 60:
                     file_of_game_to_play = 'level1.txt'
                 elif WIDTH // 2 - 50 < x < WIDTH // 2 + 50 and HEIGHT // 2 - 160 < y < HEIGHT // 2 - 60:
@@ -145,6 +216,10 @@ def start_screen():
     text_h = text.get_height()
     screen.blit(text, (text_x, text_y))
 
+    image = pygame.image.load('go_out.jpg')
+    image1 = pygame.transform.scale(image, (45, 45))
+    screen.blit(image1, (WIDTH - 50, HEIGHT - 50))
+
     clock = pygame.time.Clock()
 
     while True:
@@ -154,6 +229,8 @@ def start_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x = event.pos[0]
                 y = event.pos[1]
+                if WIDTH - 50 < x < WIDTH and HEIGHT - 50 < y < HEIGHT:
+                    terminate()
                 if WIDTH // 2 - 75 < x < WIDTH // 2 - 75 + 250 and HEIGHT // 2 + 100 < y < HEIGHT // 2 + 150:
                     return  # начинаем игру
                 elif WIDTH // 2 - 75 < x < WIDTH // 2 - 75 + 250 and HEIGHT // 2 + 175 < y < HEIGHT // 2 + 225:
@@ -179,6 +256,10 @@ player_group = pygame.sprite.Group()
 
 def generate_level(level):
     new_player, x, y = None, None, None
+    # print(all_sprites)
+    all_sprites.empty()
+    BOARD.clear()
+    # print(all_sprites)
     count = 0
     for y in range(len(level)):
         line = []
@@ -204,8 +285,8 @@ def generate_level(level):
                 chip_square = Tile('chip_square', x, y, False)
                 line.append(['chip_square', False])
             elif level[y][x] == 'e':
-                exit = Tile('exit', x, y, False)
-                line.append(['exit', False])
+                exit = Tile('exit', x, y, True)
+                line.append(['exit', True])
             elif level[y][x] == 'b':
                 disketa = Tile('disketa', x, y, False)
                 line.append(['disketa', False])
@@ -234,6 +315,7 @@ def generate_level(level):
                 picture = Tile(name, x, y, cango)
                 line.append([name, cango])
         BOARD.append(line)
+    # print(BOARD)
     # вернем игрока, а также размер поля в клетках
     return new_player, x, y, count
 
@@ -287,6 +369,7 @@ tile_images = {'empty': cut_image(load_image(picname), 0, 0),
                'pic39': cut_image(load_image(picname), 39, 0),
                'pic40': cut_image(load_image(picname), 40, 0),
                'pic41': cut_image(load_image(picname), 41, 0),
+               # 'pic42': cut_image(load_image(picname), 42, 0),
                'player_image' : cut_image(load_image(picname), 3, 0)
                }
 player_image = cut_image(load_image(picname), 3, 0)
@@ -317,7 +400,7 @@ class Tile(pygame.sprite.Sprite):
         if self.pic != BOARD[self.pos_y][self.pos_x][0] :
             self.image = tile_images[BOARD[self.pos_y][self.pos_x][0]]
             self.pic = BOARD[self.pos_y][self.pos_x][0]
-            print('sto_update', self.pos_x, self.pos_y)
+            # print('sto_update', self.pos_x, self.pos_y)
 
     def kill(self):
         super().kill(self)
@@ -394,7 +477,17 @@ while True:
             key = pygame.key.get_pressed()
             if key[pygame.K_LEFT]:
                 if BOARD[pos_y][pos_x - 1][1]:
-                    if BOARD[pos_y][pos_x - 1][0] == 'crystal':
+                    # print(BOARD[pos_y][pos_x - 1][0])
+                    if BOARD[pos_y][pos_x - 1][0] == 'exit':
+                        # print('exit')
+                        all_sprites = pygame.sprite.Group()
+                        tiles_group = pygame.sprite.Group()
+                        player_group = pygame.sprite.Group()
+                        level = end_game()
+                        player, x, y, count = generate_level(level)
+                        pos_x = player.position_x()
+                        pos_y = player.position_y()
+                    elif BOARD[pos_y][pos_x - 1][0] == 'crystal':
                         eaten += 1
                         pygame.mixer.music.pause()
                         sound_crystal.play()
@@ -405,7 +498,12 @@ while True:
                     pos_x -= 1
             if key[pygame.K_RIGHT]:
                 if BOARD[pos_y][pos_x + 1][1]:
-                    if BOARD[pos_y][pos_x + 1][0] == 'crystal':
+                    if BOARD[pos_y][pos_x + 1][0] == 'exit':
+                        level = end_game()
+                        player, x, y, count = generate_level(level)
+                        pos_x = player.position_x()
+                        pos_y = player.position_y()
+                    elif BOARD[pos_y][pos_x + 1][0] == 'crystal':
                         eaten += 1
                         pygame.mixer.music.pause()
                         sound_crystal.play()
@@ -416,7 +514,12 @@ while True:
                     pos_x += 1
             if key[pygame.K_UP]:
                 if BOARD[pos_y - 1][pos_x][1]:
-                    if BOARD[pos_y - 1][pos_x][0] == 'crystal':
+                    if BOARD[pos_y - 1][pos_x][0] == 'exit':
+                        level = end_game()
+                        player, x, y, count = generate_level(level)
+                        pos_x = player.position_x()
+                        pos_y = player.position_y()
+                    elif BOARD[pos_y - 1][pos_x][0] == 'crystal':
                         eaten += 1
                         pygame.mixer.music.pause()
                         sound_crystal.play()
@@ -427,7 +530,12 @@ while True:
                     pos_y -= 1
             if key[pygame.K_DOWN]:
                 if BOARD[pos_y + 1][pos_x][1]:
-                    if BOARD[pos_y + 1][pos_x][0] == 'crystal':
+                    if BOARD[pos_y + 1][pos_x][0] == 'exit':
+                        level = end_game()
+                        player, x, y, count = generate_level(level)
+                        pos_x = player.position_x()
+                        pos_y = player.position_y()
+                    elif BOARD[pos_y + 1][pos_x][0] == 'crystal':
                         eaten += 1
                         pygame.mixer.music.pause()
                         sound_crystal.play()
@@ -437,9 +545,9 @@ while True:
                     player.rect.y += 32
                     pos_y += 1
 
-            print(pos_y, pos_x)
-            print(BOARD[pos_y][pos_x][0])
-            print(count, eaten)
+            # print(pos_y, pos_x)
+            # print(BOARD[pos_y][pos_x][0])
+            # print(count, eaten)
     falling_stones()
     # all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -453,7 +561,6 @@ while True:
 
     all_sprites.draw(screen)
     tiles_group.draw(screen)
-    #.draw(screen)
 
     image = pygame.image.load('go_out.jpg')
     image1 = pygame.transform.scale(image, (45, 45))
