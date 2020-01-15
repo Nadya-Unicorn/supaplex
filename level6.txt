@@ -1,0 +1,24 @@
+############################################################
+#y...............................o........................y#
+#..jkjkjkjkjkjkjkjkjkjkjkjkjk..VjkjkjkjkjkjkjkjkjkjkjkjkO..#
+#..Vyo.............o. .. .oyV..W.o................y.....V..#
+#..Woooo....o.....o. . .. ooW..V.o..y..................oW..#
+#..V.o.....oyo...o.   . ....P..W.o.........y..o.......o.V..#
+#..W.o......o.....o    . .. V..V.o....o......o.o.....o..W..#
+#..V...............o    . ..W..Wyo....o o...o...o...o...V..#
+#..W....ooojkjkPjkjk<jkjkjkjko.jkjkjkjk<jkjkjkjk5.oo....W..#
+#..V.o..oo.9 . . . . . . . . ... . . . . . . . .;.o.....V..#
+#..Wy.. .y.V.y. . . .y. . . ... . . .y. . . . . 5 .....yW..#
+#..jk55 VVVW . . . . . . . . 3.. .y. . . . . .y.VjkV:Vjk5..#
+#..55jk:WWWV. . . . . . . . ... . . . . . . . . W55W W5jk..#
+#..V       W . .y. . . . .y. ... .y. . . . . . .5oooo..yV..#
+#..W.......9. . . . . . . . ... . . . . . . . . ;.ooooooW..#
+#..V.......Pjkjkjkjk:jkjkjkjk..jkjkjkjk:jkjkjk5jk.ooooooV..#
+#..Wooooo..........o oo.....V..V....... ..........o.....W..#
+#..Vyyyyyo...........o..ooo.W..Wo.o.....o........oooooooV..#
+#..Wyoyoo....yy...o.o...oyo.V..Voyo....oyo......o.......W..#
+#o.Vyyoyy ........o.o...ooo.W..Wo.o.....o......o........V..#
+#..Woyyyoo........oyo......eVo.V..yo..........o.........W..#
+#.oOjkjkjkjkjkjkjkjkjkjkjkjkW..WjkjkjkjkjkjkjkjkjkjkjkjkOo.#
+#y...........................o............................y#
+############################################################

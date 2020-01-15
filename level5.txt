@@ -1,0 +1,24 @@
+############################################################
+#o          oooVy5oooooo...................................#
+#o3#.V5jk  ooooWyVoooooo555555555V55555V5555V5oooooooooooo.#
+#V #.W.y.V ....o.Woooooo5ooooooooWoooooWooooW5oooooooooooo.#
+#W #.V . Wjk   5 5oooooo5oooo5ooooo5oVooo5o5jkoooooooooooo.#
+#  #.W . 5  5  V Voooooojkoo5oo5oo5ooWoo5oojkVoooyoooooooo.#
+# 5#.V   V     W Woooooo5oo5o5oo5oo5oo5oo5ooVWoooooooooooo.#
+#  #.W.y.W    5V 5oooooo5ooooooooooooooo.oo5W5oooooooooooo.#
+#5 #.V...V   5 W Voooooo5o5o5o5o5o5o5o5o5o5jk5oooooooooooo.#
+#  #.W. .W  5  V W......5oooooooooooooooooo555.............#
+# 5#.V y V 5   W 5      5..........V........ 5             #
+#  #.W . W     V V     jk        5 W 5   jkV 5             #
+#5 #.V . jk    W W     e5 5 5   jk V 5 5 PyW 5             #
+#  #.W . . 5   V 5      5     5  5 W 5    .V 5             #
+# 5#.Vy yV  5  W V      5        5 V 5     W 5             #
+#  #.W...W   5 V W      5 5 V  5 5 W 5 5  jk 5             #
+#5 #.V. .V     W 5    # 5   W   jk V 5     V 5             #
+#  #.W. .W    oV V      jk  V    5 W 55  5 W 5             #
+# 5#.Vy yV   5yW W   #  5   W 5  5 V 5yo   V 5             #
+#  #.W. .W  5..V 5      5  5   5 5 W 5..5  W 5             #
+#5 #.V . V 5   W V  #   5   V 5  5 V 5 5  jk 5             #
+#  ..W. .W     V W      5 5 W   jk W 5     V 5             #
+#y5#.# y jk    W        o.   5   5   5     W               #
+############################################################

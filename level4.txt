@@ -1,0 +1,24 @@
+############################################################
+#y..o.oo...yV...o.o..o...y9 .oo....P.oooyo.P..o....oo......#
+#.oo.....yo.W..o.y...o....V.o....o.V.o.....9 ..o..o..oo..o.#
+#...3.o...o.V..o..o.oy..ooW......o.W.....o.V..o..o.....o...#
+#.....o.....W..o.o......ooVjkV.....V....o..Woo..........oyo#
+#........o..V.....oo....o.WooWy....Wy..o.o.V....Vjk:jkV.ooo#
+#..y....o...Wyo......  o. ;ooV..VjkV.o...o.Wyy..W.. o.W....#
+#..oooo.....VjkjkjkjkjkjkjkoyW..WPVW.o...o.jkjkjk..o..jkjkN#
+#..o......o.W..ooyo..P..o..o.V..jkWV..o....Vy...V.....Pyooo#
+#y......o...V......o.9 .o..o.W.....W......oW..ooWo.o.oVooeo#
+#o......o...W.o.o....V...o.o.VjkV..V....o..V....Vo.o.oWoooo#
+#...oy...o.yVy.....y.Wyoo....WVOW..W. .o..yW.o..Wo.o.oV....#
+#jk:Pjk:jkjkWo....oo.jkjkjkjkPWjk..jk<jkjkjk....Vo.o.oW..o.#
+#y..... yP......o....V.yo..........P.....V...o..W.....V.oyo#
+#....o...Vyyo.o......W....oo.o.o.o.V.o...Wo.... ;.....W....#
+#..o.....W.....o.y. .V............yW...o.Vo..o..V.....V...o#
+#..y..o..jkjkjkjkjk<PWjkVjk:jkjkjkjk.....Wy.o...W..y..W.o..#
+#..o....oV.....o....oo.yW.. o.o.........oV......Pjk#jkP...o#
+#....y.o.Wo.....o....oo.V...o..o..y..o...W.o.y..o.yV.o.....#
+#...oo...P.o..o..o......W.oy.......o....oV...o...o.W..o...o#
+#....o..o9 .o...oyo...o.V........o.......W........o9 ..y.o.#
+#.o......V...o..oo....o.W..o.....o..oo.o.V.....oo..V..oo...#
+#y...o..yWy...o......o..Oy..o..o.......oyWy.o......W.o....y#
+############################################################

@@ -1,0 +1,24 @@
+############################################################
+#.5o5.V.oooooo.........ooooo5ooooooooooooo.55jk.....o5.....#
+#.5y5.W..oooo...ooooy5......5oooooooooooo5y.55V.o5o.o5o.jk.#
+#.5.5.V...oo.jk...ooo5ooooo.5oooooooooooo55y.5Wo.5o.o5.o5..#
+#.5 5.W...V...jk5.ooo5...o..5oooooooooooo5O5y.5.o5o.o5o.5.5#
+#.5 5.jkjkW.5...5.ooo5...o.ojkoooooooooo5QRS5y5o.5o.o5.o5..#
+#35 5.V...oojko.5.ooo5jkjk.jkjkoooooooo5VTP5y.5.o5o.o5o.jk.#
+#.5 5.W.o.ooNOo.5.ooo5...o.o5Ljkooooooo5WU5y.5oo.5o.o5.o5..#
+#.V V...o.oojko.5.ooo5.o.o.o5FFF5ooooo5IE5y.5o...5o.o5o.5.5#
+#.W W.Vo. ..VVo.5.ooo5.o.o.o5jk#LVooo5jk5y.5o..5jko.o5.o5..#
+#.. ..W.. ..WWo.5...o5.o.o.o5#TOPW5o5jk5y.V...5oo...o5o.V5.#
+#jk5jk5jk5jkjko.jk5.o5.o...o5QRSUT5o5V5...W.55ooo.ooo5.oW5.#
+#oooooooooooooo...5.o5.555555555555.5W555...5.....ooo5...5.#
+#...............V.5.o5.oooo..............V555.ooooooo5jk.5.#
+# jk555555555555W.5.o5.oooo.5............W...............5.#
+#.. ... .. .... 5.5.o5...oo.5............V5555555555555555.#
+#.55555555V5555.5.5.o55o.o..5............W.................#
+# .y. ... W .y. 5.5.o5Q5...55............Vyyy.y.y.y.yyy.y.y#
+#.55555jk.5.555jk.5.o5RS5 5O5            W.y..y.y.y.y.y.y.y#
+#.. ..y. .5 ... 5.5.o5LP   55            V.y..yyy.y.y.y.yy.#
+# 55V555V.jk555.5.5.o5   5  5            W.y..y.y.y.y.y.y.y#
+#.. W.. W.5 .y5.555.o5 5  5 5            V.y..y.y.y.y.y.y.y#
+#.5y. P.. ..jk5 ....5jk     5            We................#
+############################################################
