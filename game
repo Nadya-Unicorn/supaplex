@@ -14,6 +14,7 @@ BOARD = []
 END = False
 
 def terminate():
+    # Выход из игры
     pygame.quit()
     sys.exit()
 
@@ -23,11 +24,13 @@ def load_image(name, colorkey=None):
     return myimage
 
 def cut_image(iimage, x1, y1):
+    # Получение необходимой картинки для каждого объекта
     x = x1 * LENGTH
     y = y1 * LENGTH
     return iimage.subsurface(x, y, LENGTH, LENGTH)
 
 def end_game():
+    # Заврешение игры, переход на новый уровень
     global file_of_game_to_play
     global eaten
     screen.fill((0, 0, 0))
@@ -35,7 +38,7 @@ def end_game():
     text_coord = 50
     st = 'YOU GOT ' + str(eaten) + '/' + str(count) + '!'
     text = font.render(st, 1, (255, 255, 255))
-    text_x = WIDTH // 2 - 70
+    text_x = WIDTH // 2 - 90
     text_y = HEIGHT // 2 - 200
     text_w = text.get_width()
     text_h = text.get_height()
@@ -88,6 +91,7 @@ def bomb_all(i, j):
     sound_bomb.play()
 
 def falling_stones():
+    # Камни и кристаллы падают вниз, если есть возможность
     global BOARD
     for i in range(len(BOARD) - 1, 0, -1 ):
         for j in range(len(BOARD[i])):
@@ -115,6 +119,7 @@ def falling_stones():
                     # print('stoneee3', i, j)
 
 def choose_level():
+    # Выбор уровня
     global file_of_game_to_play
 
     fon = pygame.transform.scale(load_image('Background.png'), (WIDTH, HEIGHT))
@@ -192,6 +197,7 @@ def choose_level():
 
 
 def start_screen():
+    # Начало игры
     fon = pygame.transform.scale(load_image('Background.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     pygame.draw.rect(screen, (150, 255, 150), (WIDTH // 2 - 75, HEIGHT // 2 + 100,
