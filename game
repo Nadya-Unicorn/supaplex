@@ -4,7 +4,7 @@ import sys
 import time
 
 
-FPS = 60
+FPS = 3
 WIDTH = 1200
 HEIGHT = 768
 LENGTH = 32
@@ -61,21 +61,18 @@ def end_game():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x = event.pos[0]
                 y = event.pos[1]
-                # print(x, y)
+
                 if WIDTH - 50 < x < WIDTH and HEIGHT - 50 < y < HEIGHT:
                     terminate()
 
                 elif WIDTH // 2 - 70 < x < WIDTH // 2 + 175 and HEIGHT // 2 + 100 < y < HEIGHT // 2 + 155:
-                    # print('next')
                     file = file_of_game_to_play.split('.')[0]
                     num = int(file[5:])
                     file_of_game_to_play = 'level' + str(num + 1) + '.txt'
-                    # print('selected',file_of_game_to_play)
                     BOARD = []
                     eaten = 0
                     return load_level(file_of_game_to_play)
         pygame.display.flip()
-        # clock.tick(FPS)
 
 def bomb_all(i, j):
     BOARD[i][j] = ['pic41', True]
@@ -98,25 +95,23 @@ def falling_stones():
             if BOARD[i][j][0] == 'stone':
                 if BOARD[i + 1][j][0] == 'empty':
                     BOARD[i + 1][j] = ['stone', False]
-                    BOARD[i][j] = ['empty', True]
-                    # print('stoneee1', i, j)
-                # elif BOARD[i + 1][j][0] == 'player_image':
-                #     bomb_all(i, j)
-                #     END = True
+                    BOARD[i][j] = ['empty1', True]
                 elif BOARD[i + 1][j - 1][0] == 'empty' and BOARD[i + 1][j][0] != 'player_image' and\
                         BOARD[i][j - 1][0] == 'empty' and BOARD[i + 1][j][0] == 'stone':
                     BOARD[i + 1][j - 1] = ['stone', False]
-                    BOARD[i][j] = ['empty', True]
-                    # print('stoneee2',i,j)
+                    BOARD[i][j] = ['empty1', True]
                 elif BOARD[i + 1][j + 1][0] == 'empty' and BOARD[i + 1][j][0] != 'player_image' and\
                         BOARD[i][j + 1][0] == 'empty' and BOARD[i + 1][j][0] == 'stone':
                     BOARD[i + 1][j + 1] = ['stone', False]
-                    BOARD[i][j] = ['empty', True]
+                    BOARD[i][j] = ['empty1', True]
             if BOARD[i][j][0] == 'crystal':
                 if BOARD[i + 1][j][0] == 'empty':
                     BOARD[i + 1][j] = ['crystal', True]
-                    BOARD[i][j] = ['empty', True]
-                    # print('stoneee3', i, j)
+                    BOARD[i][j] = ['empty1', True]
+    for i in range(len(BOARD) - 1, 0, -1 ):
+        for j in range(len(BOARD[i])):
+            if BOARD[i][j][0] == 'empty1':
+                BOARD[i][j] = ['empty', True]
 
 def choose_level():
     # Выбор уровня
@@ -262,10 +257,8 @@ player_group = pygame.sprite.Group()
 
 def generate_level(level):
     new_player, x, y = None, None, None
-    # print(all_sprites)
     all_sprites.empty()
     BOARD.clear()
-    # print(all_sprites)
     count = 0
     for y in range(len(level)):
         line = []
@@ -297,7 +290,7 @@ def generate_level(level):
                 disketa = Tile('disketa', x, y, False)
                 line.append(['disketa', False])
             elif level[y][x] == 'c':
-                pult = Tile('pult', x, y, False)   # Взрыв дискет
+                pult = Tile('pult', x, y, False) 
                 line.append(['pult', False])
             elif level[y][x] == '#':
                 fence = Tile('fence', x, y, False)
@@ -321,7 +314,6 @@ def generate_level(level):
                 picture = Tile(name, x, y, cango)
                 line.append([name, cango])
         BOARD.append(line)
-    # print(BOARD)
     # вернем игрока, а также размер поля в клетках
     return new_player, x, y, count
 
@@ -375,7 +367,6 @@ tile_images = {'empty': cut_image(load_image(picname), 0, 0),
                'pic39': cut_image(load_image(picname), 39, 0),
                'pic40': cut_image(load_image(picname), 40, 0),
                'pic41': cut_image(load_image(picname), 41, 0),
-               # 'pic42': cut_image(load_image(picname), 42, 0),
                'player_image' : cut_image(load_image(picname), 3, 0)
                }
 player_image = cut_image(load_image(picname), 3, 0)
@@ -389,7 +380,7 @@ class Tile(pygame.sprite.Sprite):
         super().__init__(all_sprites)
         self.image = tile_images[tile_type]
         self.can_go_to = can_go
-        self.name = all_sprites  #tiles_group
+        self.name = all_sprites  
         self.pic = tile_type
         self.rect = self.image.get_rect().move(tile_width * pos_x, tile_height * pos_y)
         self.pos_x = pos_x
@@ -402,11 +393,9 @@ class Tile(pygame.sprite.Sprite):
         return self.name
 
     def update(self):
-        # print('update', self.pos_x, self.pos_y)
         if self.pic != BOARD[self.pos_y][self.pos_x][0] :
             self.image = tile_images[BOARD[self.pos_y][self.pos_x][0]]
             self.pic = BOARD[self.pos_y][self.pos_x][0]
-            # print('sto_update', self.pos_x, self.pos_y)
 
     def kill(self):
         super().kill(self)
@@ -461,9 +450,6 @@ pygame.mixer.music.load('sound\\music.mp3')
 pygame.mixer.music.play()
 
 sound_crystal = pygame.mixer.Sound('sound\\crystal.wav')
-# sound_bomb = pygame.mixer.Sound('sound\\bomb.mp3')
-# sound_fail = pygame.mixer.Sound('sound\\fail.mp3')
-# sound_victory = pygame.mixer.Sound('sound\\victory.mp3')
 
 eaten = 0
 sec = 0
@@ -483,9 +469,7 @@ while True:
             key = pygame.key.get_pressed()
             if key[pygame.K_LEFT]:
                 if BOARD[pos_y][pos_x - 1][1]:
-                    # print(BOARD[pos_y][pos_x - 1][0])
                     if BOARD[pos_y][pos_x - 1][0] == 'exit':
-                        # print('exit')
                         all_sprites = pygame.sprite.Group()
                         tiles_group = pygame.sprite.Group()
                         player_group = pygame.sprite.Group()
@@ -550,12 +534,7 @@ while True:
                     BOARD[pos_y + 1][pos_x] = ['player_image', False]
                     player.rect.y += 32
                     pos_y += 1
-
-            # print(pos_y, pos_x)
-            # print(BOARD[pos_y][pos_x][0])
-            # print(count, eaten)
     falling_stones()
-    # all_sprites = pygame.sprite.Group()
     all_sprites.update()
     #update_level(pos_x, pos_y)
     screen.fill((0, 0, 0))
@@ -580,15 +559,5 @@ while True:
     text_w = text.get_width()
     text_h = text.get_height()
     screen.blit(text, (text_x, text_y))
-
-    # time.sleep(1)
-    # sec += 1
-    # st = str(sec // 60).rjust(2, '0') + ':' + str(sec % 60).rjust(2, '0')
-    # text = font.render(st, 1, (255, 255, 255))
-    # text_x = WIDTH - text.get_width() - 10
-    # text_y = 10
-    # text_w = text.get_width()
-    # text_h = text.get_height()
-    # screen.blit(text, (text_x, text_y))
 
     pygame.display.flip()
